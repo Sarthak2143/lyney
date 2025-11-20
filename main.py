@@ -1,12 +1,15 @@
 import os
+import sys
 
 from dotenv import load_dotenv
 from google import genai
 
-prompt = "why hajime no ippo is such a great anime? use one paragraph maximum."
-
 
 def main():
+  if len(sys.argv) != 2:
+    print(f"Usage: {sys.argv[0]} prompt")
+    sys.exit(1)
+  prompt = sys.argv[1]
   load_dotenv()
   api_key = os.environ.get("GEMINI_API_KEY")
   client = genai.Client(api_key=api_key)
