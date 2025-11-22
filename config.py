@@ -1,0 +1,1 @@
+MAX_CHARS_TO_READ: int = 10000
