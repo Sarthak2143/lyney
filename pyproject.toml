@@ -9,6 +9,7 @@ dependencies = [
     "python-dotenv>=1.2.1",
 ]
 
+# config for zed ruff to override defaults
 [tool.ruff]
 indent-width = 2
 
