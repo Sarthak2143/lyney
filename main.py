@@ -6,10 +6,21 @@ from google import genai
 from google.genai import types
 
 
-def main():
-  if len(sys.argv) != 2:
-    print(f"Usage: {sys.argv[0]} prompt")
-    sys.exit(1)
+def exit_msg() -> None:
+  print(f"Usage: {sys.argv[0]} prompt [--verbose]")
+  sys.exit(1)
+
+
+def main() -> None:
+  if len(sys.argv) not in [2, 3]:
+    exit_msg()
+  verbose = False
+
+  if len(sys.argv) == 3:
+    if sys.argv[2] != "--verbose":
+      exit_msg()
+    else:
+      verbose = True
 
   prompt: str = sys.argv[1]
   load_dotenv()
@@ -24,8 +35,10 @@ def main():
     contents=messages,
   )
   print(response.text)
-  print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")  # pyright: ignore[reportOptionalMemberAccess]
-  print(f"Response tokens: {response.usage_metadata.candidates_token_count}")  # pyright: ignore[reportOptionalMemberAccess]
+  if verbose:
+    print(f"User prompt: {prompt}")
+    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")  # pyright: ignore[reportOptionalMemberAccess]
+    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")  # pyright: ignore[reportOptionalMemberAccess]
 
 
 if __name__ == "__main__":
