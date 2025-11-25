@@ -47,8 +47,6 @@ def main() -> None:
       print(f"Error: {e}")
 
 
-
-
 def generate_content(client, messages, verbose) -> str | None:
   response = client.models.generate_content(
     model="gemini-2.0-flash-001",
@@ -81,7 +79,11 @@ def generate_content(client, messages, verbose) -> str | None:
   if not fn_resp:
     raise Exception("no function responses generated, exiting.")
   for fn in fn_resp:
-    messages.append(types.Content(role="user", parts=[types.Part(function_response=fn.function_response)]))
+    messages.append(
+      types.Content(
+        role="user", parts=[types.Part(function_response=fn.function_response)]
+      )
+    )
 
 
 if __name__ == "__main__":
