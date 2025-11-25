@@ -37,7 +37,7 @@ def main() -> None:
 
   for i in range(MAX_TRIES):
     # basic loop to test agentic workflow, too tired rn :/
-    # todo: create a better chat ui, more like opencode or gemini code
+    # TODO: create a better chat ui, more like opencode or gemini code
     try:
       res = generate_content(client, messages, verbose)
       if res:
