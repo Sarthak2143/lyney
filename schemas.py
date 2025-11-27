@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 from google.genai import types
 
@@ -44,7 +44,7 @@ def call_function(
       ],
     )
 
-  args: dict[bytes, bytes] = dict(function_call_part.args)  # pyright: ignore[reportCallIssue, reportArgumentType]
+  args: dict[str, Any] = dict(function_call_part.args)  # pyright: ignore[reportCallIssue, reportArgumentType]
   args["working_dir"] = WORKING_DIR  # pyright: ignore[reportArgumentType]
   fn_result: str = functions[fn_name](**args)  # pyright: ignore[reportCallIssue]
   return types.Content(
