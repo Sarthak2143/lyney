@@ -5,8 +5,8 @@ from google.genai import types
 
 
 def run_python_file(working_dir, file_path, args=[]) -> str:
-  abs_wrk_dir = os.path.abspath(working_dir)
-  full_path = os.path.abspath(os.path.join(working_dir, file_path))
+  abs_wrk_dir: str = os.path.abspath(working_dir)
+  full_path: str = os.path.abspath(os.path.join(working_dir, file_path))
   if not file_path.endswith(".py"):
     return f'Error: "{file_path}" is not a Python file.'
   if not os.path.exists(full_path):
@@ -18,7 +18,7 @@ def run_python_file(working_dir, file_path, args=[]) -> str:
     commands: list[str] = ["python3", file_path]
     if args:
       commands.extend(args)
-    result = subprocess.run(
+    result: subprocess.CompletedProcess[str] = subprocess.run(
       commands,
       capture_output=True,
       text=True,
@@ -39,7 +39,7 @@ def run_python_file(working_dir, file_path, args=[]) -> str:
     return f"Error: executing Python file: {e}"
 
 
-schema_run_file = types.FunctionDeclaration(
+schema_run_file: types.FunctionDeclaration = types.FunctionDeclaration(
   name="run_python_file",
   description="Executes a Python file within the working directory and returns the output from the interpreter.",
   parameters=types.Schema(

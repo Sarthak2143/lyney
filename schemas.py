@@ -1,3 +1,5 @@
+from typing import Callable
+
 from google.genai import types
 
 from config import WORKING_DIR
@@ -6,7 +8,7 @@ from functions.get_files_info import get_files_info, schema_get_files_info
 from functions.run_file import run_python_file, schema_run_file
 from functions.write_file import schema_write_file, write_file
 
-available_functions = types.Tool(
+available_functions: types.Tool = types.Tool(
   function_declarations=[
     schema_get_files_info,
     schema_get_file_content,
@@ -19,7 +21,7 @@ available_functions = types.Tool(
 def call_function(
   function_call_part: types.FunctionCall, verbose=False
 ) -> types.Content:
-  functions = {
+  functions: dict[str, Callable[..., str]] = {
     "get_file_content": get_file_content,
     "get_files_info": get_files_info,
     "write_file": write_file,
@@ -30,7 +32,7 @@ def call_function(
   else:
     print(f" - Calling function: {function_call_part.name}")
 
-  fn_name = function_call_part.name
+  fn_name: str | None = function_call_part.name
   if fn_name not in functions:
     return types.Content(
       role="tool",
@@ -42,9 +44,9 @@ def call_function(
       ],
     )
 
-  args = dict(function_call_part.args)  # pyright: ignore[reportCallIssue, reportArgumentType]
+  args: dict[bytes, bytes] = dict(function_call_part.args)  # pyright: ignore[reportCallIssue, reportArgumentType]
   args["working_dir"] = WORKING_DIR  # pyright: ignore[reportArgumentType]
-  fn_result = functions[fn_name](**args)  # pyright: ignore[reportCallIssue]
+  fn_result: str = functions[fn_name](**args)  # pyright: ignore[reportCallIssue]
   return types.Content(
     role="tool",
     parts=[

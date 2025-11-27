@@ -24,7 +24,7 @@ def main() -> None:
     sys.exit(1)
 
   api_key: str | None = os.environ.get("GEMINI_API_KEY")
-  client = genai.Client(api_key=api_key)
+  client: genai.Client = genai.Client(api_key=api_key)
 
   prompt: str = " ".join(args)
 
@@ -39,7 +39,7 @@ def main() -> None:
     # basic loop to test agentic workflow, too tired rn :/
     # TODO: create a better chat ui, more like opencode or gemini code
     try:
-      res = generate_content(client, messages, verbose)
+      res: str | None = generate_content(client, messages, verbose)
       if res:
         print(f"Final response: {res}")
         break
@@ -48,7 +48,7 @@ def main() -> None:
 
 
 def generate_content(client, messages, verbose) -> str | None:
-  response = client.models.generate_content(
+  response: types.GenerateContentResponse = client.models.generate_content(
     model="gemini-2.0-flash-001",
     contents=messages,
     config=types.GenerateContentConfig(

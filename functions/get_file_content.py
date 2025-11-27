@@ -6,8 +6,8 @@ from config import MAX_CHARS_TO_READ
 
 
 def get_file_content(working_dir, file_path) -> str:
-  abs_wrk_dir = os.path.abspath(working_dir)
-  full_path = os.path.abspath(os.path.join(working_dir, file_path))
+  abs_wrk_dir: str = os.path.abspath(working_dir)
+  full_path: str = os.path.abspath(os.path.join(working_dir, file_path))
   if not os.path.isfile(full_path):
     return f'Error: File not found or is not a regular file: "{file_path}"'
   if not full_path.startswith(abs_wrk_dir):
@@ -25,7 +25,7 @@ def get_file_content(working_dir, file_path) -> str:
     return f'Error reading file "{file_path}": {e}'
 
 
-schema_get_file_content = types.FunctionDeclaration(
+schema_get_file_content: types.FunctionDeclaration = types.FunctionDeclaration(
   name="get_file_content",
   description=f"Read and returns the first {MAX_CHARS_TO_READ} characters of the content from a specified file within the working directory.",
   parameters=types.Schema(

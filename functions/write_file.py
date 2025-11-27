@@ -3,9 +3,9 @@ import os
 from google.genai import types
 
 
-def write_file(working_dir, file_path, content):
-  abs_wrk_dir = os.path.abspath(working_dir)
-  full_path = os.path.abspath(os.path.join(working_dir, file_path))
+def write_file(working_dir, file_path, content) -> str:
+  abs_wrk_dir: str = os.path.abspath(working_dir)
+  full_path: str = os.path.abspath(os.path.join(working_dir, file_path))
   if not full_path.startswith(abs_wrk_dir):
     return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
 
@@ -17,7 +17,7 @@ def write_file(working_dir, file_path, content):
     return f'Error writing file "{file_path}": {e}'
 
 
-schema_write_file = types.FunctionDeclaration(
+schema_write_file: types.FunctionDeclaration = types.FunctionDeclaration(
   name="write_file",
   description="Writes content to a file within the working directory. Creates the file if it doesn't exist.",
   parameters=types.Schema(

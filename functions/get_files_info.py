@@ -14,7 +14,7 @@ def get_files_info(working_dir, directory=".") -> str:
   try:
     file_stats: list[str] = []
     for file in os.listdir(full_path):
-      file_path = os.path.join(full_path, file)
+      file_path: str = os.path.join(full_path, file)
       # building string to make debugging ez for llm
       file_stats.append(
         f"- {file}: file_size={os.path.getsize(file_path)} bytes, is_dir={os.path.isdir(file_path)}"
@@ -24,7 +24,7 @@ def get_files_info(working_dir, directory=".") -> str:
     return f"Error listing files: {e}"
 
 
-schema_get_files_info = types.FunctionDeclaration(
+schema_get_files_info: types.FunctionDeclaration = types.FunctionDeclaration(
   name="get_files_info",
   description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
   parameters=types.Schema(
