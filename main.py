@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-from config import MAX_TRIES
+from config import HEADER, MAX_TRIES
 from prompts import system_prompt
 from schemas import available_functions, call_function
 
@@ -14,37 +14,30 @@ def main() -> None:
   load_dotenv()
 
   verbose: bool = "--verbose" in sys.argv
-  args: list[str] = []
-  for arg in sys.argv[1:]:
-    if not arg.startswith("--"):
-      args.append(arg)
-
-  if not args:
-    print(f'Usage: {sys.argv[0]} "prompt" [--verbose]')
-    sys.exit(1)
 
   api_key: str | None = os.environ.get("GEMINI_API_KEY")
   client: genai.Client = genai.Client(api_key=api_key)
 
-  prompt: str = " ".join(args)
+  messages: list[types.Content] = []
+  os.system("clear")
+  # will fix this later, lol
+  print(HEADER)
+  print(" ai codihhn agent, so that you can goon rather than code")
 
-  if verbose:
-    print(f"User prompt: {prompt}")
-
-  messages: list[types.Content] = [
-    types.Content(role="user", parts=[types.Part(text=prompt)]),
-  ]
-
-  for i in range(MAX_TRIES):
-    # basic loop to test agentic workflow, too tired rn :/
-    # TODO: create a better chat ui, more like opencode or gemini code
+  while True:
     try:
-      res: str | None = generate_content(client, messages, verbose)
-      if res:
-        print(f"Final response: {res}")
-        break
-    except Exception as e:
-      print(f"Error: {e}")
+      prompt: str = input("> ")
+      messages.append(types.Content(role="user", parts=[types.Part(text=prompt)]))
+      for i in range(MAX_TRIES):
+        try:
+          res: str | None = generate_content(client, messages, verbose)
+          if res:
+            print(res)
+            break
+        except Exception as e:
+          print(f"Error: {e}")
+    except KeyboardInterrupt:
+      exit(1)
 
 
 def generate_content(client, messages, verbose) -> str | None:
