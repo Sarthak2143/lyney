@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-from config import HEADER, MAX_TRIES
+from config import GEMINI_MODEL, HEADER, MAX_TRIES
 from prompts import system_prompt
 from schemas import available_functions, call_function
 
@@ -19,8 +19,11 @@ def main() -> None:
   client: genai.Client = genai.Client(api_key=api_key)
 
   messages: list[types.Content] = []
-  os.system("clear")
-  # will fix this later, lol
+
+  if os.name == "nt":
+    os.system("cls")
+  else:
+    os.system("clear")
   print(HEADER)
   print(" ai codihhn agent, so that you can goon rather than code")
 
@@ -42,7 +45,7 @@ def main() -> None:
 
 def generate_content(client, messages, verbose) -> str | None:
   response: types.GenerateContentResponse = client.models.generate_content(
-    model="gemini-2.0-flash-001",
+    model=GEMINI_MODEL,
     contents=messages,
     config=types.GenerateContentConfig(
       tools=[available_functions], system_instruction=system_prompt

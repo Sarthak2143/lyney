@@ -10,5 +10,6 @@ wheels/
 .venv
 
 .env
+TODO.md
 calculator/
 .vscode/
