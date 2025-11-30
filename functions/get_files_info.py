@@ -1,23 +1,25 @@
-import os
-
+from pathlib import Path
 from google.genai import types
 
+from functions.utils import validate_path
 
-def get_files_info(working_dir, directory=".") -> str:
-  abs_wrk_dir: str = os.path.abspath(working_dir)
-  full_path: str = os.path.abspath(os.path.join(working_dir, directory))
-  if not os.path.isdir(full_path):
-    return f'Error: "{directory}" is not a directory'
-  # check if dir exists under working_dir
-  if not full_path.startswith(abs_wrk_dir):
+
+def get_files_info(working_dir: str, directory: str = ".") -> str:
+  validation: Path | None = validate_path(working_dir, directory)
+  if not validation:
     return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
+
+  full_path: Path = validation
+
+  if not full_path.is_dir():
+    return f'Error: "{directory}" is not a directory'
   try:
     file_stats: list[str] = []
-    for file in os.listdir(full_path):
-      file_path: str = os.path.join(full_path, file)
+    for item in full_path.iterdir():
+      stat: Path.stat_result = item.stat()
       # building string to make debugging ez for llm
       file_stats.append(
-        f"- {file}: file_size={os.path.getsize(file_path)} bytes, is_dir={os.path.isdir(file_path)}"
+        f"- {item.name}: file_size={stat.st_size} bytes, is_dir={item.is_dir()}"
       )
     return "\n".join(file_stats)
   except Exception as e:

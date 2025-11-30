@@ -25,7 +25,7 @@ def main() -> None:
   else:
     os.system("clear")
   print(HEADER)
-  print(" ai codihhn agent, so that you can goon rather than code")
+  print(" ai codihhn agent, so that you can goon rather than code\n")
 
   while True:
     try:
@@ -57,7 +57,7 @@ def main() -> None:
             continue
           else:
             print(f"Error after {MAX_TRIES} attempts: {e}")
-            # remove last msg from messsages to avoid corruption. smh docs suggest lol
+            # remove last msg from messsages to avoid corruption. smh docs suggest it lol
             messages.pop()
             break
       else:
@@ -112,8 +112,8 @@ def generate_content(client, messages, verbose) -> str | None:
       )
     )
 
-    # recursive call to continue conversation
-    return generate_content(client, messages, verbose)
+  # recursive call to continue conversation
+  return generate_content(client, messages, verbose)
 
 
 if __name__ == "__main__":

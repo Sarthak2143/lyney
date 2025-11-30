@@ -1,22 +1,24 @@
-import os
-
 from google.genai import types
+from pathlib import Path
 
 from config import MAX_CHARS_TO_READ
+from functions.utils import validate_path
 
 
-def get_file_content(working_dir, file_path) -> str:
-  abs_wrk_dir: str = os.path.abspath(working_dir)
-  full_path: str = os.path.abspath(os.path.join(working_dir, file_path))
-  if not os.path.isfile(full_path):
-    return f'Error: File not found or is not a regular file: "{file_path}"'
-  if not full_path.startswith(abs_wrk_dir):
+def get_file_content(working_dir: str, file_path: str) -> str:
+  validation: Path | None = validate_path(working_dir, file_path)
+  if not validation:
     return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
 
+  full_path: Path = validation
+
+  if not full_path.is_file():
+    return f'Error: File not found or is not a regular file: "{file_path}"'
+
   try:
-    with open(full_path, "r") as f:
+    with open(full_path, "r", encoding="utf-8") as f:
       content: str = f.read(MAX_CHARS_TO_READ)
-      if os.path.getsize(full_path) > MAX_CHARS_TO_READ:
+      if full_path.stat().st_size > MAX_CHARS_TO_READ:
         content += (
           f'[...File "{file_path}" truncated at {MAX_CHARS_TO_READ} characters]'
         )

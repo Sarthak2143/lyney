@@ -1,16 +1,21 @@
-import os
+from pathlib import Path
 
 from google.genai import types
 
+from functions.utils import validate_path
+
 
 def write_file(working_dir, file_path, content) -> str:
-  abs_wrk_dir: str = os.path.abspath(working_dir)
-  full_path: str = os.path.abspath(os.path.join(working_dir, file_path))
-  if not full_path.startswith(abs_wrk_dir):
+  validation: Path | None = validate_path(working_dir, file_path)
+  if not validation:
     return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
 
+  full_path: Path = validation
+
   try:
-    with open(full_path, "w") as f:
+    # ensure parent dir exists
+    full_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(full_path, "w", encoding="utf-8") as f:
       f.write(content)
     return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
   except Exception as e:
