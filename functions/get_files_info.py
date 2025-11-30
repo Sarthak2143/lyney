@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from google.genai import types
@@ -17,7 +18,7 @@ def get_files_info(working_dir: str, directory: str = ".") -> str:
   try:
     file_stats: list[str] = []
     for item in full_path.iterdir():
-      stat: Path.stat_result = item.stat()
+      stat: os.stat_result = item.stat()
       # building string to make debugging ez for llm
       file_stats.append(
         f"- {item.name}: file_size={stat.st_size} bytes, is_dir={item.is_dir()}"
