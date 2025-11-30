@@ -33,7 +33,7 @@ def main() -> None:
       if not prompt:
         continue
       if prompt.lower() in ("exit", "quit"):
-        print("goodbye!")
+        print("Goodbye!")
         sys.exit(0)
 
       messages.append(types.Content(role="user", parts=[types.Part(text=prompt)]))
