@@ -29,18 +29,49 @@ def main() -> None:
 
   while True:
     try:
-      prompt: str = input("> ")
+      prompt: str = input("> ").strip()
+      if not prompt:
+        continue
+      if prompt.lower() in ("exit", "quit"):
+        print("goodbye!")
+        sys.exit(0)
+
       messages.append(types.Content(role="user", parts=[types.Part(text=prompt)]))
-      for i in range(MAX_TRIES):
+
+      # retry loop
+      last_error: Exception | None = None
+      for attempt in range(1, MAX_TRIES + 1):
         try:
           res: str | None = generate_content(client, messages, verbose)
           if res:
             print(res)
             break
+          if attempt < MAX_TRIES:
+            if verbose:
+              print(f"  (continuing conversation, attempt {attempt + 1}/{MAX_TRIES})")
         except Exception as e:
-          print(f"Error: {e}")
+          last_error = e
+          if verbose:
+            print(f"  Error on attempt {attempt}/{MAX_TRIES}")
+          if attempt < MAX_TRIES:
+            continue
+          else:
+            print(f"Error after {MAX_TRIES} attempts: {e}")
+            # remove last msg from messsages to avoid corruption. smh docs suggest lol
+            messages.pop()
+            break
+      else:
+        if last_error:
+          print(f"Failed after {MAX_TRIES} attempts. Last error: {last_error}")
+        else:
+          print(f"No response after {MAX_TRIES} attempts.")
+
     except KeyboardInterrupt:
-      exit(1)
+      print("\nInterrupted. Goodbye!")
+      sys.exit(0)
+    except EOFError:
+      print("\nGoodbye!")
+      sys.exit(0)
 
 
 def generate_content(client, messages, verbose) -> str | None:
@@ -80,6 +111,9 @@ def generate_content(client, messages, verbose) -> str | None:
         role="user", parts=[types.Part(function_response=fn.function_response)]
       )
     )
+
+    # recursive call to continue conversation
+    return generate_content(client, messages, verbose)
 
 
 if __name__ == "__main__":
