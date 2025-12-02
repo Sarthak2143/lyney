@@ -3,6 +3,7 @@ from pathlib import Path
 
 from google.genai import types
 
+from config import TIMEOUT_SECS
 from functions.utils import validate_path
 
 
@@ -30,7 +31,7 @@ def run_python_file(
       commands,
       capture_output=True,
       text=True,
-      timeout=30,
+      timeout=TIMEOUT_SECS,
       cwd=str(abs_wrk_dir),
     )
     output: list[str] = []
@@ -44,7 +45,7 @@ def run_python_file(
 
     return "\n".join(output) if output else "No output produced."
   except subprocess.TimeoutExpired:
-    return f"Error: Execution of {file_path} timed out after 30 seconds."
+    return f"Error: Execution of {file_path} timed out after {TIMEOUT_SECS} seconds."
   except Exception as e:
     return f"Error: executing Python file: {e}"
 
